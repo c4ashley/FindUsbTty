@@ -1,8 +1,15 @@
 #!/bin/bash
 
+if [ "$#" -ne 2 ]; then
+	echo "USAGE: $0 VID PID" >&2
+	echo "VID & PID specify the vendor and product ID of the desired USB device, given in hex." >&2
+	exit 1
+fi
+
 StartingDir=$PWD
 Vendor=$1
 Product=$2
+
 
 cd /sys/bus/usb/devices
 
@@ -34,6 +41,7 @@ do
 					fi
 #				fi
 				done
+				# Should I return an error if the USB was valid but has no TTY?
 				exit 0
 			fi
 		fi
