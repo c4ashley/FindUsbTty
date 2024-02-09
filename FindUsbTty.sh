@@ -3,7 +3,7 @@
 if [ "$#" -ne 2 ]; then
 	echo "USAGE: $0 VID PID" >&2
 	echo "VID & PID specify the vendor and product ID of the desired USB device, given in hex." >&2
-	exit 1
+	exit -1
 fi
 
 StartingDir=$PWD
@@ -30,19 +30,22 @@ do
 					if [[ -d "./$ep/tty" ]]
 					then
 						cd "./$ep/tty"
-						for tty in ./*
+						for tty in *
 						do
-							if [[ -c "/dev/${tty:2}" ]]
-							then
-								echo "/dev/${tty:2}"
+							# In rare circumstances, [[ -c "/dev/${tty}" ]] may fail to `stat`, and hence return false,
+							# even though the file exists. Hopefully bypassing this check doesn't introduce other issues.
+							
+							#if [[ -c "/dev/${tty}" ]]
+							#then
+								echo "/dev/${tty}"
 								exit 0
-							fi
+							#fi
 						done
 					fi
 #				fi
 				done
 				# Should I return an error if the USB was valid but has no TTY?
-				exit 0
+				exit 2
 			fi
 		fi
 	fi
